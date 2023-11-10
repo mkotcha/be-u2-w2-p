@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 
@@ -40,4 +41,10 @@ public class UserController {
             }
         }
     }
+
+    @PostMapping("/{id}/avatar")
+    public String uploadExample(@PathVariable long id, @RequestParam("avatar") MultipartFile body) throws IOException {
+        return userService.uploadPicture(id, body);
+    }
+    
 }

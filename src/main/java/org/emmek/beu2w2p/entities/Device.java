@@ -17,7 +17,6 @@ public class Device {
     private long id;
     private String category;
     private String state;
-    private String picture;
 
     @ManyToOne
     @JoinColumn(name = "user_id")

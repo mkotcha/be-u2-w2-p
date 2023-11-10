@@ -10,7 +10,6 @@ public class BadRequestException extends RuntimeException {
     private List<ObjectError> errorsList;
 
     public BadRequestException(String message) {
-
         super(message);
     }
 

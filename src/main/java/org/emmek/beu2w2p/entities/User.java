@@ -30,4 +30,5 @@ public class User {
     private String surname;
     @Column(unique = true)
     private String email;
+    private String avatar;
 }

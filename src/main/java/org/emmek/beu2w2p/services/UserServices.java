@@ -1,6 +1,7 @@
 package org.emmek.beu2w2p.services;
 
 import com.cloudinary.Cloudinary;
+import com.cloudinary.utils.ObjectUtils;
 import org.emmek.beu2w2p.entities.User;
 import org.emmek.beu2w2p.exception.BadRequestException;
 import org.emmek.beu2w2p.exception.NotFoundException;
@@ -14,6 +15,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 
@@ -60,5 +62,12 @@ public class UserServices {
         return userRepository.save(u);
     }
 
+    public String uploadPicture(long id, MultipartFile file) throws IOException {
+        User user = userRepository.findById(id).orElseThrow(() -> new NotFoundException(id));
+        String url = (String) cloudinary.uploader().upload(file.getBytes(), ObjectUtils.emptyMap()).get("url");
+        user.setAvatar(url);
+        userRepository.save(user);
+        return url;
+    }
 }
 
