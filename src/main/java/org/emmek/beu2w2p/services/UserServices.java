@@ -25,7 +25,7 @@ public class UserServices {
     private Cloudinary cloudinary;
 
     public User save(UserPostDTO body) throws IOException {
-        userRepository.findByUsername(body.email()).ifPresent(a -> {
+        userRepository.findByUsername(body.username()).ifPresent(a -> {
             throw new BadRequestException("Username " + a.getUsername() + " already exists");
         });
         userRepository.findByEmail(body.email()).ifPresent(a -> {

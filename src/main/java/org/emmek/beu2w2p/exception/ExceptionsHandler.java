@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -25,13 +24,13 @@ public class ExceptionsHandler {
 
     @ExceptionHandler(BadRequestException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorsResponseWithListDTO handleBadRequest(BadRequestException e) {
+    public ErrorPayload handleBadRequest(BadRequestException e) {
 
         if (e.getErrorsList() != null) {
             List<String> errorsList = e.getErrorsList().stream().map(DefaultMessageSourceResolvable::getDefaultMessage).toList();
-            return new ErrorsResponseWithListDTO(e.getMessage(), new Date(), errorsList);
+            return new ErrorPayloadWithListDTO(e.getMessage(), new Date(), errorsList);
         } else {
-            return new ErrorsResponseWithListDTO(e.getMessage(), new Date(), new ArrayList<>());
+            return new ErrorPayload(e.getMessage(), new Date());
         }
     }
 
