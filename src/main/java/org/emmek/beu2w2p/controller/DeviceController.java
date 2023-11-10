@@ -82,7 +82,7 @@ public class DeviceController {
         return deviceService.putInMaintenance(id);
     }
 
-    @GetMapping("{id}/setailable")
+    @GetMapping("{id}/setavailable")
     public Device putInAvailable(@PathVariable long id) {
         return deviceService.setAvailable(id);
     }
@@ -91,7 +91,6 @@ public class DeviceController {
     public Device putInDisused(@PathVariable long id) {
         return deviceService.putInDisused(id);
     }
-
-//    @GetMapping("available")
+    
 
 }
