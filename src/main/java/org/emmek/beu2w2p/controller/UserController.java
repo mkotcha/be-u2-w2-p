@@ -2,6 +2,7 @@ package org.emmek.beu2w2p.controller;
 
 import org.emmek.beu2w2p.entities.User;
 import org.emmek.beu2w2p.exception.BadRequestException;
+import org.emmek.beu2w2p.exception.NotFoundException;
 import org.emmek.beu2w2p.payloads.UserPostDTO;
 import org.emmek.beu2w2p.payloads.UserPutDTO;
 import org.emmek.beu2w2p.services.UserServices;
@@ -49,13 +50,15 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    @ResponseStatus(HttpStatus.FOUND)
     public User getUserById(@PathVariable long id) {
+
         try {
             return userService.findById(id);
         } catch (Exception e) {
-            return null;
+            throw new NotFoundException(id);
         }
+
+
     }
 
     @PutMapping("/{id}")
@@ -65,4 +68,15 @@ public class UserController {
         }
         return userService.findByIdAndUpdate(id, body);
     }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void findByIdAndDelete(@PathVariable int id) {
+        try {
+            userService.findByIdAndDelete(id);
+        } catch (NotFoundException e) {
+            throw new NotFoundException(id);
+        }
+    }
+
 }
