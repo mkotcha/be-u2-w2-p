@@ -2,6 +2,7 @@ package org.emmek.beu2w2p.services;
 
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
+import org.emmek.beu2w2p.config.EmailSender;
 import org.emmek.beu2w2p.entities.User;
 import org.emmek.beu2w2p.exception.BadRequestException;
 import org.emmek.beu2w2p.exception.NotFoundException;
@@ -25,6 +26,9 @@ public class UserServices {
     @Autowired
     private Cloudinary cloudinary;
 
+    @Autowired
+    private EmailSender emailSender;
+
     public User save(UserPostDTO body) throws IOException {
         userRepository.findByUsername(body.username()).ifPresent(a -> {
             throw new BadRequestException("Username " + a.getUsername() + " already exists");
@@ -37,7 +41,9 @@ public class UserServices {
         user.setName(body.name());
         user.setSurname(body.surname());
         user.setEmail(body.email());
-        return userRepository.save(user);
+        User savedUser = userRepository.save(user);
+        emailSender.sendRegistrationEmail(savedUser);
+        return savedUser;
     }
 
     public Page<User> getUsers(int page, int size, String sort) {
