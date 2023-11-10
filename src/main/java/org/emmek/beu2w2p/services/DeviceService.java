@@ -18,7 +18,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @Service
-public class DeviceServices {
+public class DeviceService {
     @Autowired
     DeviceRepository deviceRepository;
 
@@ -51,7 +51,8 @@ public class DeviceServices {
     }
 
     public void findByIdAndDelete(long id) {
-        deviceRepository.deleteById(id);
+        Device device = deviceRepository.findById(id).orElseThrow(() -> new NotFoundException(id));
+        deviceRepository.delete(device);
     }
 
     public Device findByIdAndUpdate(long id, DevicePutDTO body) {

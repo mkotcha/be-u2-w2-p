@@ -22,7 +22,8 @@ public class User {
     @ToString.Exclude
     List<Device> devices;
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @Column(nullable = false)
     private long id;
     @Column(unique = true)
     private String username;

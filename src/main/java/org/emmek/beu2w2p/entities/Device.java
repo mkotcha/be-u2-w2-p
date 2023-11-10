@@ -13,7 +13,8 @@ import lombok.*;
 public class Device {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @Column(nullable = false)
     private long id;
     private String category;
     private String state;
