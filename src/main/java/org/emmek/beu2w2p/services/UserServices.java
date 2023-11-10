@@ -14,7 +14,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -50,8 +49,9 @@ public class UserServices {
         return userRepository.findById(id).orElseThrow(() -> new NotFoundException(id));
     }
 
-    public void findByIdAndDelete(long id) throws MethodArgumentTypeMismatchException {
-        userRepository.deleteById(id);
+    public void findByIdAndDelete(long id) throws NotFoundException {
+        User user = userRepository.findById(id).orElseThrow(() -> new NotFoundException(id));
+        userRepository.delete(user);
     }
 
     public User findByIdAndUpdate(long id, UserPutDTO body) throws NotFoundException {

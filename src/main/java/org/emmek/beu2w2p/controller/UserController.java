@@ -51,14 +51,11 @@ public class UserController {
 
     @GetMapping("/{id}")
     public User getUserById(@PathVariable long id) {
-
         try {
             return userService.findById(id);
         } catch (Exception e) {
             throw new NotFoundException(id);
         }
-
-
     }
 
     @PutMapping("/{id}")
