@@ -1,6 +1,7 @@
 package org.emmek.beu2w2p.services;
 
 import org.emmek.beu2w2p.entities.Device;
+import org.emmek.beu2w2p.entities.User;
 import org.emmek.beu2w2p.exception.BadRequestException;
 import org.emmek.beu2w2p.exception.NotFoundException;
 import org.emmek.beu2w2p.payloads.DevicePostDTO;
@@ -79,7 +80,80 @@ public class DeviceService {
     }
 
     public Page<Device> getDevicesByUserId(long id, int page, int size, String sort) {
+        User user = userRepository.findById(id).orElseThrow(() -> new NotFoundException(id));
         Pageable pageable = PageRequest.of(page, size, Sort.by(sort));
-        return deviceRepository.getDevicesByUserId(id, pageable);
+        return deviceRepository.getDevicesByUser(user, pageable);
+    }
+
+    public Device assignUser(long deviceId, long userId) {
+        Device device = deviceRepository.findById(deviceId).orElseThrow(() -> new NotFoundException(deviceId));
+        device.setState("assigned");
+        device.setUser(userRepository.findById(userId).orElseThrow(() -> new NotFoundException(userId)));
+        return deviceRepository.save(device);
+    }
+
+    public Device unassignUser(long deviceId) {
+        Device device = deviceRepository.findById(deviceId).orElseThrow(() -> new NotFoundException(deviceId));
+        device.setState("available");
+        device.setUser(null);
+        return deviceRepository.save(device);
+    }
+
+    public Device putInMaintenance(long deviceId) {
+        Device device = deviceRepository.findById(deviceId).orElseThrow(() -> new NotFoundException(deviceId));
+        device.setState("maintenance");
+        return deviceRepository.save(device);
+    }
+
+    public Device putInDisused(long deviceId) {
+        Device device = deviceRepository.findById(deviceId).orElseThrow(() -> new NotFoundException(deviceId));
+        device.setState("disused");
+        if (device.getUser() != null) {
+            device.setUser(null);
+        }
+        return deviceRepository.save(device);
+    }
+
+    public Device setAvailable(long deviceId) {
+        Device device = deviceRepository.findById(deviceId).orElseThrow(() -> new NotFoundException(deviceId));
+        device.setState("available");
+        if (device.getUser() != null) {
+            device.setUser(null);
+        }
+        return deviceRepository.save(device);
+    }
+
+    public Page<Device> getDevices(long userId, String category, String state, int page, int size, String sort) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(sort));
+        if (userId > 0) {
+            User user = userRepository.findById(userId).orElseThrow(() -> new NotFoundException(userId));
+            if (category.isEmpty() && state.isEmpty()) {
+                return deviceRepository.getDevicesByUser(user, pageable);
+            } else {
+                if (category.isEmpty() && !state.isEmpty()) {
+                    return deviceRepository.getByStateAndUser(state, user, pageable);
+                }
+                if (state.isEmpty() && !category.isEmpty()) {
+                    return deviceRepository.getByCategoryAndUser(category, user, pageable);
+                }
+                return deviceRepository.getByStateAndCategoryAndUser(state, category, user, pageable);
+            }
+        } else {
+            if (category.isEmpty() && state.isEmpty()) {
+                return deviceRepository.findAll(pageable);
+            } else {
+                if (category.isEmpty() && !state.isEmpty()) {
+                    return deviceRepository.getByState(state, pageable);
+                }
+                if (state.isEmpty() && !category.isEmpty()) {
+                    return deviceRepository.getByCategory(category, pageable);
+                }
+                return deviceRepository.getByStateAndCategory(state, category, pageable);
+            }
+        }
     }
 }
+
+
+
+

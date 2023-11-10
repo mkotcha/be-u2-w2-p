@@ -21,10 +21,13 @@ public class DeviceController {
     private DeviceService deviceService;
 
     @GetMapping("")
-    public Page<Device> getDevices(@RequestParam(defaultValue = "0") int page,
+    public Page<Device> getDevices(@RequestParam(defaultValue = "0") long userId,
+                                   @RequestParam(defaultValue = "") String category,
+                                   @RequestParam(defaultValue = "") String state,
+                                   @RequestParam(defaultValue = "0") int page,
                                    @RequestParam(defaultValue = "10") int size,
                                    @RequestParam(defaultValue = "id") String sort) {
-        return deviceService.getDevices(page, size, sort);
+        return deviceService.getDevices(userId, category, state, page, size, sort);
     }
 
     @PostMapping("")
@@ -63,4 +66,32 @@ public class DeviceController {
             throw new NotFoundException(id);
         }
     }
+
+    @GetMapping("/{deviceId}/assign/{userId}")
+    public Device assignUser(@PathVariable long deviceId, @PathVariable long userId) {
+        return deviceService.assignUser(deviceId, userId);
+    }
+
+    @GetMapping("/{deviceId}/unassign")
+    public Device unassignUser(@PathVariable long deviceId) {
+        return deviceService.unassignUser(deviceId);
+    }
+
+    @GetMapping("{id}/putinmaintenance")
+    public Device putInMaintenance(@PathVariable long id) {
+        return deviceService.putInMaintenance(id);
+    }
+
+    @GetMapping("{id}/setailable")
+    public Device putInAvailable(@PathVariable long id) {
+        return deviceService.setAvailable(id);
+    }
+
+    @GetMapping("{id}/setdisused")
+    public Device putInDisused(@PathVariable long id) {
+        return deviceService.putInDisused(id);
+    }
+
+//    @GetMapping("available")
+
 }
