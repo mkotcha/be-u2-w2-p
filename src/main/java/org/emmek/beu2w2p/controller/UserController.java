@@ -3,6 +3,7 @@ package org.emmek.beu2w2p.controller;
 import org.emmek.beu2w2p.entities.User;
 import org.emmek.beu2w2p.exception.BadRequestException;
 import org.emmek.beu2w2p.payloads.UserPostDTO;
+import org.emmek.beu2w2p.payloads.UserPutDTO;
 import org.emmek.beu2w2p.services.UserServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -46,5 +47,22 @@ public class UserController {
     public String uploadExample(@PathVariable long id, @RequestParam("avatar") MultipartFile body) throws IOException {
         return userService.uploadPicture(id, body);
     }
-    
+
+    @GetMapping("/{id}")
+    @ResponseStatus(HttpStatus.FOUND)
+    public User getUserById(@PathVariable long id) {
+        try {
+            return userService.findById(id);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    @PutMapping("/{id}")
+    public User findByIdAndUpdate(@PathVariable long id, @RequestBody @Validated UserPutDTO body, BindingResult validation) {
+        if (validation.hasErrors()) {
+            throw new BadRequestException(validation.getAllErrors());
+        }
+        return userService.findByIdAndUpdate(id, body);
+    }
 }

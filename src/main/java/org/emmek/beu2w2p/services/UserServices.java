@@ -54,11 +54,11 @@ public class UserServices {
         userRepository.deleteById(id);
     }
 
-    public User findByIdAndUpdate(long id, UserPutDTO user) throws NotFoundException {
+    public User findByIdAndUpdate(long id, UserPutDTO body) throws NotFoundException {
         User u = userRepository.findById(id).orElseThrow(() -> new NotFoundException(id));
-        u.setName(user.name());
-        u.setSurname(user.surname());
-        u.setEmail(user.email());
+        u.setName(body.name());
+        u.setSurname(body.surname());
+        u.setEmail(body.email());
         return userRepository.save(u);
     }
 
