@@ -2,16 +2,14 @@ package org.emmek.beu2w2p.entities;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
 import lombok.*;
 import org.apache.commons.lang3.builder.ToStringExclude;
 
 import java.util.List;
 
 @Entity
+@Table(name = "users")
 @Getter
 @Setter
 @ToString
@@ -26,8 +24,10 @@ public class User {
     @Id
     @GeneratedValue
     private long id;
+    @Column(unique = true)
     private String username;
     private String name;
     private String surname;
+    @Column(unique = true)
     private String email;
 }
